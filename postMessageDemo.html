@@ -28,7 +28,7 @@ iframe {
     <input type="text" id="msg" placeholder="Type message to send"/>
     <input type="submit" value="Send message" />
   </form>
-  <p id="smsg">&nbsp;</p>
+  <p id="msg-recived">&nbsp;</p>
   <iframe id="externalContent" src="https://gmuriel05.github.io/test-aper/postMessageReceiver.html"></iframe>
 </p>
 </div>
@@ -55,7 +55,7 @@ function listener(event){
   var response   = JSON.parse(event.data),
       newMessage = response['newMessage'];
 
-  document.getElementById("msg").innerHTML = "received: \""+(newMessage ? newMessage : 'nada')+"\" from: "+event.origin;
+  document.getElementById("msg-recived").innerHTML = "received: \""+(newMessage ? newMessage : 'nada')+"\" from: "+event.origin;
 }
 
 //attach a listener for when postMessage calls come in...
