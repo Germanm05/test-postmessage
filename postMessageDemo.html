@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<title>postMessage() Demo</title>
+<style>
+body {
+  background-color: lightgray;
+}
+
+iframe {
+  display:block;
+  width:500px;
+  height:300px;
+  /* margin:50px auto; */
+  margin-top: 5px;
+  border: medium solid black;
+  background-color: white;
+}
+</style>
+</head>
+<body>
+<h1>postMessage() Demo</h1>
+
+<div class="container-fluid">
+<p>
+  <form id="form">
+    <input type="text" id="msg" placeholder="Type message to send"/>
+    <input type="submit" value="Send message" />
+  </form>
+  <p id="msg">&nbsp;</p>
+  <iframe id="externalContent" src="https://gmuriel05.github.io/test-aper/postMessageReceiver.html"></iframe>
+</p>
+</div>
+
+<br/>
+<br/>
+<br/>
+<hr />
+<div>
+  <p>If you find this demo useful, consider <a href="https://www.paypal.me/RobertGravelle/1" target="_blank">donating $1 dollar</a> for a coffee (secure PayPal link) or purchasing one of my songs from <a href="https://ax.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?term=rob%20gravelle" target="_blank">iTunes.com</a> or <a href="http://www.amazon.com/s/ref=ntt_srch_drd_B001ES9TTK?ie=UTF8&field-keywords=Rob%20Gravelle&index=digital-music&search-type=ss" target="_blank">Amazon.com</a> for only 0.99 cents each.</p>
+  <p>Rob uses and recommends <a href="http://www.mochahost.com/2425.html" target="_blank">MochaHost</a>, which provides Web Hosting for as low as $1.95 per month, as well as unlimited emails and disk space!</p>
+</div>
+<script>
+//expected origin of iFramed content...
+var ORIGIN = "https://gmuriel05.github.io";
+
+//listen for messages coming from the expected origin...
+function listener(event){
+  if(event.origin !== ORIGIN){
+    return;
+  }
+  console.log(event);
+
+  var response   = JSON.parse(event.data),
+      newMessage = response['newMessage'];
+
+  document.getElementById("msg").innerHTML = "received: \""+(newMessage ? newMessage : 'nada')+"\" from: "+event.origin;
+}
+
+//attach a listener for when postMessage calls come in...
+if (window.addEventListener){
+  alert('recibiendo');
+  addEventListener("message", listener, false);
+}else{
+  attachEvent("onmessage", listener);
+  alert('recibiendo');
+}
+
+//send a message into the hosted iFrame...
+document.getElementById("form").onsubmit = function(e){
+  //target the iFrame
+  var win = document.getElementById("externalContent").contentWindow;
+  //hey! what are we sending?
+  console.log("transmitting: "+document.getElementById("msg").value);
+
+  //transmit our message to the iFramed page...
+  //use JSON.stringify() to send text...
+  win.postMessage(JSON.stringify({ 'newMessage': document.getElementById("msg").value }), ORIGIN);
+  //IE?
+  //win.postMessage("'newMessage': document.getElementById('msg').value", ORIGIN);
+
+  //e.preventDefault();
+  return false;
+};
+</script>
+</body>
+</html>
